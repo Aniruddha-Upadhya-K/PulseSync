@@ -39,12 +39,23 @@ type GLTFResult = GLTF & {
   };
 };
 
-interface props {
-  position?: [number, number, number];
-  scale?: number;
-}
+// interface props {
+//   position?: [number, number, number];
+//   scale?: number;
+// }
 
-export function Avatar(props: props) {
+export function Avatar({ audio, text, lipsync, position, scale }: any) {
+  const corresponding = {
+    A: "viseme_PP",
+    B: "viseme_kk",
+    C: "viseme_I",
+    D: "viseme_AA",
+    E: "viseme_O",
+    F: "viseme_U",
+    G: "viseme_FF",
+    H: "viseme_TH",
+    X: "viseme_PP",
+  };
   const { nodes, materials } = useGLTF("/assets/avatar.glb") as GLTFResult;
 
   const { animations: idle } = useFBX("/assets/animations/Idle.fbx");
@@ -61,17 +72,23 @@ export function Avatar(props: props) {
 
   const { actions } = useAnimations([idle[0], greeting[0], talking[0]], group);
 
+  // useEffect(() => {
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  //   actions?.[animations].reset().fadeIn(0.5).play();
+  //   return () => {
+  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  //     actions?.[animations]?.fadeOut(0.5);
+  //   };
+  // }, [animations]);
+
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    actions?.[animations].reset().fadeIn(0.5).play();
-    return () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      actions?.[animations]?.fadeOut(0.5);
-    };
-  }, [animations]);
+    if (!actions[animation]) return;
+    actions[animation].reset().fadeIn(0.5).play();
+    return () => actions[animation]?.fadeOut(0.5);
+  }, [animation]);
 
   return (
-    <group {...props} dispose={null} ref={group}>
+    <group position={position} scale={scale} dispose={null} ref={group}>
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="EyeLeft"
