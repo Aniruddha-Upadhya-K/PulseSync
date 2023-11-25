@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
 import {
 	Card,
 	CardContent,
@@ -22,9 +23,11 @@ export default function Chat({ className, ...props }: CardProps) {
 	const { data: sessionData } = useSession();
 	const [input, setInput] = useState("");
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInput(e.target.value);
-	};
+	const chat = api.chat.handleQuery.useMutation()
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    }
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -48,6 +51,7 @@ export default function Chat({ className, ...props }: CardProps) {
 	turnOnMic();
 
 	const [transcript, setTranscript] = useState("");
+	const [transcript1, setTranscript1] = useState("");
 	const [lang, setLang] = useState("en");
 	const [queryResults, setQueryResults] = useState([]);
 	const [placeholder, setPlaceholder] = useState("loading");
@@ -147,98 +151,60 @@ export default function Chat({ className, ...props }: CardProps) {
 		}
 	}, 3000);
 
-	return (
-		<div className="flex min-h-screen items-center justify-center">
-			<Card
-				className={cn(
-					"grid h-[500px] w-[380px] grid-rows-[min-content_1fr_min-content]",
-					className
-				)}
-				{...props}
-			>
-				<CardHeader>
-					<CardTitle>Chat with SyncBot</CardTitle>
-					<CardDescription>
-						Your personal AI Assistant
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="flex gap-3 text-sm text-white">
-						<Avatar>
-							<AvatarFallback>DF</AvatarFallback>
-							<AvatarImage src={sessionData?.user.image ?? ""} />
-						</Avatar>
-						<p className="leading-relaxed">
-							<span className="block font-bold text-white ">
-								SyncBot:
-							</span>
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Beatae, quo, porro eligendi corrupti veritatis
-							ipsam molestias obcaecati asperiores aspernatur quas
-							illum eveniet accusantium! Cumque quia, molestias
-							reiciendis a sunt officia?
-						</p>
-					</div>
-					<div className="flex gap-3 text-sm text-white">
-						<Avatar>
-							<AvatarFallback>DF</AvatarFallback>
-							<AvatarImage src={sessionData?.user.image ?? ""} />
-						</Avatar>
-						<p className="leading-relaxed">
-							<span className="block font-bold text-white ">
-								SyncBot:
-							</span>
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Beatae, quo, porro ?
-						</p>
-					</div>
-				</CardContent>
-				<CardFooter className="space-x-2">
-					<div className="flex w-full max-w-sm items-center space-x-2">
-						<form
-							className="flex w-full space-x-2"
-							onSubmit={handleSubmit}
-						>
-							<Input
-								type="text"
-								placeholder={placeholder}
-								id="search-bar"
-								value={transcript}
-								onChange={(e) => setTranscript(e.target.value)}
-								onKeyDown={(e) => setMicActive(false)}
-							/>
-							<div className="flex flex-row gap-1">
-								<Button type="submit" size="icon">
-									<CornerRightUp className="h-4 w-4" />
-								</Button>
-								{micActive ? (
-									<Button
-										type="submit"
-										size="icon"
-										onClick={(e) => {
-											e.preventDefault();
-											setMicActive(!micActive);
-										}}
-									>
-										<Mic className="h-4 w-4" />
-									</Button>
-								) : (
-									<Button
-										type="submit"
-										size="icon"
-										onClick={(e) => {
-											e.preventDefault();
-											setMicActive(!micActive);
-										}}
-									>
-										<MicOff className="h-4 w-4" />
-									</Button>
-								)}
-							</div>
-						</form>
-					</div>
-				</CardFooter>
-			</Card>
-		</div>
-	);
+  return (
+    <div className="flex justify-center min-h-screen items-center">
+    <Card className={cn("w-[380px] h-[500px] grid grid-rows-[min-content_1fr_min-content]", className)} {...props}>
+      <CardHeader>
+        <CardTitle>Chat with SyncBot</CardTitle>
+        <CardDescription>Your personal AI Assistant</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex gap-3 text-white text-sm">
+            <Avatar>
+                <AvatarFallback>DF</AvatarFallback>
+                <AvatarImage src={sessionData?.user.image ?? ""} />
+            </Avatar>
+            <p className="leading-relaxed">
+                <span className="block font-bold text-white ">SyncBot:</span>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae, quo, porro eligendi corrupti veritatis ipsam molestias obcaecati asperiores aspernatur quas illum eveniet accusantium! Cumque quia, molestias reiciendis a sunt officia?</p>
+        </div>
+        <div className="flex gap-3 text-white text-sm">
+        <Avatar>
+                <AvatarFallback>DF</AvatarFallback>
+                <AvatarImage src={sessionData?.user.image ?? ""} />
+
+            </Avatar>
+            <p className="leading-relaxed">
+                <span className="block font-bold text-white ">SyncBot:</span>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae, quo, porro ?</p>
+        </div>
+    </CardContent>
+      <CardFooter className="space-x-2">
+      <div className="flex w-full max-w-sm items-center space-x-2">
+        <form className="w-full space-x-2 flex" onSubmit={handleSubmit}>
+      <Input type="text" placeholder={placeholder}  id="search-bar" defaultValue={transcript}
+					onChange={(e) => setTranscript1(e.target.value)}
+					onKeyDown={(e) => setMicActive(false)}/>
+      <div className="flex flex-row gap-1">
+      <Button type="submit" size="icon" onClick={()=>{
+		console.log(transcript1)
+		chat.mutate({
+		query:transcript1
+	  })}}><CornerRightUp className="h-4 w-4" /></Button>
+      {
+        micActive ?
+        <Button type="submit" size="icon" onClick={(e)=>{
+            e.preventDefault();
+            setMicActive(!micActive);
+      }}><Mic  className="h-4 w-4" /></Button> : <Button type="submit" size="icon" onClick={(e)=>{
+        e.preventDefault();
+        setMicActive(!micActive);
+  }}><MicOff  className="h-4 w-4" /></Button>
+    }</div>
+      </form>
+    </div>
+      </CardFooter>
+    </Card>
+    </div>
+  )
 }
