@@ -1,6 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import Register from "~/components/Register";
 import { api } from "~/utils/api";
 import Chat from "~/components/Chat";
 import { Canvas, useThree } from "@react-three/fiber";
@@ -21,7 +20,7 @@ export default function Home() {
           <OrbitControls />
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore */}
-          <Avatar position={[-1, -3, 1]} scale={2} />
+          <Avatar position={[-1, -3.15, 1.5]} scale={2.25} />
           <Environment preset="apartment" />
           <Scene />
         </Canvas>
@@ -38,7 +37,6 @@ export default function Home() {
           <Button onClick={() => signIn("google")}>Talk with SyncBot</Button>
         )}
         {sessionData?.user.image ? <Chat /> : ""}
-        <Register />
       </main>
     </>
   );

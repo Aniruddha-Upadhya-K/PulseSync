@@ -66,7 +66,7 @@ export function Avatar(props: props) {
     actions?.[animations].reset().fadeIn(0.5).play();
     return () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      actions?.[animations].fadeOut(0.5);
+      actions?.[animations]?.fadeOut(0.5);
     };
   }, [animations]);
 
