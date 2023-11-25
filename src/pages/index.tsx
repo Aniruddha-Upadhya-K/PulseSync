@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import Register from "~/components/Register";
 import { api } from "~/utils/api";
 import Chat from "~/components/Chat";
+import Model from "~/components/Avatar";
 
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
 
   return (
@@ -33,6 +33,7 @@ export default function Home() {
 
         }
         <Register />
+	<Model />	
       </main>
     </>
   );
