@@ -32,7 +32,6 @@ export default async function handler(
           responseType: "arraybuffer",
         }
       );
-      console.log(result.data);
 
       await fs.promises.writeFile("audio.ogg", Buffer.from(result.data));
 
@@ -51,14 +50,16 @@ export default async function handler(
           .save(outputFilePath);
       })
       await oggFile
+
+	  return result.data
     }
-    await getAudioData();
+    const audioBuffer = await getAudioData();
     console.log(body);
     const command = '"C:/Users/satwi/Desktop/TASC Hackathon/pulsesync/src/pages/api/rhubarb.exe" -f json audio.ogg'
     console.log(command)
 
     const result = await exec(command)
-    return res.json({ message: "works", data: result.stdout });
+    return res.json({ message: "success", data: {lipsync:result.stdout, audio:audioBuffer}});
   }
   catch (error) {
     console.log(error)
