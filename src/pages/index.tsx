@@ -12,8 +12,15 @@ import { useState } from "react";
 
 export default function Home() {
   const { data: sessionData } = useSession();
+  const [audioAvailable, setAudioAvailable] = useState(undefined);
 
-  const chat = api.chat.handleQuery.useMutation();
+  const chat = api.chat.handleQuery.useMutation({
+    onSuccess(data, variables, context) {
+      const blob = new Blob([data?.audio], { type: "audio/mpeg" });
+      const audio = new Audio(URL.createObjectURL(blob));
+      setAudioAvailable(audio);
+    },
+  });
 
   return (
     <>
@@ -26,8 +33,8 @@ export default function Home() {
           <Avatar
             position={[-1, -3.15, 1.5]}
             scale={2.25}
-            audio={chat.data?.audio.data}
-            lipsync={chat?.data?.lipsync}
+            audioSpeech={audioAvailable}
+            lipsync={chat.data?.lipsync}
           />
           <Environment preset="apartment" />
           <Scene />
