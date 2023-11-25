@@ -56,9 +56,11 @@ export default function Chat({ chatApi }: prop) {
 
   useEffect(() => {
     if (getChatData.data) {
-      setChatData();
+      setChatData(getChatData.data.text);
     }
+  }, [getChatData.data]);
 
+  useEffect(() => {
     const MIMEtype = "audio/webm";
 
     const webSocketURL =
@@ -154,9 +156,7 @@ export default function Chat({ chatApi }: prop) {
       <Card
         className={cn(
           "mt-20 grid w-[380px] grid-rows-[min-content_1fr_min-content]",
-          className,
         )}
-        {...props}
       >
         <CardHeader>
           <CardTitle>Chat with SyncBot</CardTitle>
@@ -168,16 +168,6 @@ export default function Chat({ chatApi }: prop) {
               <>
                 <div className="flex gap-3 text-sm text-white">
                   <Avatar>
-                    <AvatarFallback></AvatarFallback>
-                    <AvatarImage src="/favicon.png" />
-                  </Avatar>
-                  <p className="leading-relaxed">
-                    <span className="block font-bold text-white ">SyncBot</span>
-                    {data.model}
-                  </p>
-                </div>
-                <div className="flex gap-3 text-sm text-white">
-                  <Avatar>
                     <AvatarFallback>DF</AvatarFallback>
                     <AvatarImage src={sessionData?.user.image ?? ""} />
                   </Avatar>
@@ -185,8 +175,17 @@ export default function Chat({ chatApi }: prop) {
                     <span className="block font-bold text-white ">
                       {sessionData?.user?.name}
                     </span>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Beatae, quo, porro ?
+                    {data?.user}
+                  </p>
+                </div>
+                <div className="flex gap-3 text-sm text-white">
+                  <Avatar>
+                    <AvatarFallback></AvatarFallback>
+                    <AvatarImage src="/favicon.png" />
+                  </Avatar>
+                  <p className="leading-relaxed">
+                    <span className="block font-bold text-white ">SyncBot</span>
+                    {data.model}
                   </p>
                 </div>
               </>
@@ -210,7 +209,7 @@ export default function Chat({ chatApi }: prop) {
                   size="icon"
                   onClick={() => {
                     console.log(transcript1);
-                    chat.mutate({
+                    chatApi.mutate({
                       query: transcript1,
                     });
                   }}

@@ -19,6 +19,7 @@ export default function Home() {
       const blob = new Blob([data?.audio], { type: "audio/mpeg" });
       const audio = new Audio(URL.createObjectURL(blob));
       setAudioAvailable(audio);
+      console.log("audio blob has transformed into audio source\n",audio);
     },
   });
 

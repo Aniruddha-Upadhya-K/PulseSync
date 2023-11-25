@@ -75,17 +75,18 @@ export const chatRouter = createTRPCRouter({
 					{ headers: { "Content-Type": "application/json" } }
 				);
 
+				console.log(response.data)
 				//keep context as chat history for later use
-				const prevHistory = JSON.parse(context?.chatHistory);
+				const prevHistory = JSON.parse(context?.chatHistory ?? JSON.stringify([]));
 				await ctx.prisma.chats.update({
 					where: {
 						id: chatid,
 					},
 					data: {
-						chatHistory: [
+						chatHistory: JSON.stringify([
 							...prevHistory,
-							{ user: input.query, model: response.data.content },
-						],
+							{ user: input.query, model: String(response.data.content) },
+						]),
 					},
 				});
 
@@ -117,7 +118,7 @@ export const chatRouter = createTRPCRouter({
 					id: chatid,
 				},
 			});
-			return { text: data?.chatHistory };
+			return { text: JSON.parse(data?.chatHistory ?? JSON.stringify([])) };
 		}
 	})
 });
