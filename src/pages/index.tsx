@@ -11,11 +11,7 @@ import { Environment, OrbitControls, useTexture } from "@react-three/drei";
 import { Avatar } from "~/components/3d/Avatar";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
-
-  // const texture = useTexture("/assets/texture.png")
-  // const viewport = useThree((state) => state.viewport)
 
   return (
     <>
