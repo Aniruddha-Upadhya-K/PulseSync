@@ -54,6 +54,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     // @ts-ignore
+    ELEVEN_LABS_API_KEY:process.env.ELEVEN_LABS_API_KEY,
+    // @ts-ignore
     NEXT_PUBLIC_SPEECH_KEY: process.env.NEXT_PUBLIC_SPEECH_KEY,
   },
   /**

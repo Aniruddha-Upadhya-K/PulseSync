@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useState, useEffect } from "react"
+import { api } from "~/utils/api"
 var websocket;
 var globalMic = true;
 
@@ -22,6 +23,8 @@ type CardProps = React.ComponentProps<typeof Card>
 export default function Chat({ className, ...props }: CardProps) {
     const { data: sessionData } = useSession();
     const [input, setInput] = useState("");
+
+	const chat = api.chat.handleQuery.useMutation()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
@@ -51,6 +54,7 @@ export default function Chat({ className, ...props }: CardProps) {
 	turnOnMic();
 
 	const [transcript, setTranscript] = useState("");
+	const [transcript1, setTranscript1] = useState("");
 	const [lang, setLang] = useState("en");
 	const [queryResults, setQueryResults] = useState([]);
 	const [placeholder, setPlaceholder] = useState("loading");
@@ -182,11 +186,15 @@ const webSocket = new WebSocket(webSocketURL, [
       <CardFooter className="space-x-2">
       <div className="flex w-full max-w-sm items-center space-x-2">
         <form className="w-full space-x-2 flex" onSubmit={handleSubmit}>
-      <Input type="text" placeholder={placeholder}  id="search-bar" value={transcript}
-					onChange={(e) => setTranscript(e.target.value)}
+      <Input type="text" placeholder={placeholder}  id="search-bar" defaultValue={transcript}
+					onChange={(e) => setTranscript1(e.target.value)}
 					onKeyDown={(e) => setMicActive(false)}/>
       <div className="flex flex-row gap-1">
-      <Button type="submit" size="icon"><CornerRightUp className="h-4 w-4" /></Button>
+      <Button type="submit" size="icon" onClick={()=>{
+		console.log(transcript1)
+		chat.mutate({
+		query:transcript1
+	  })}}><CornerRightUp className="h-4 w-4" /></Button>
       {
         micActive ?
         <Button type="submit" size="icon" onClick={(e)=>{

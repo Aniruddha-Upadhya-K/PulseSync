@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-	relationMode = "prisma"
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 model Account {
@@ -14,17 +14,17 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String?  @db.Text
-    access_token      String?  @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String?  @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
-	@@index([userId])
+    @@index([userId])
 }
 
 model Session {
@@ -34,7 +34,7 @@ model Session {
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-	@@index([userId])
+    @@index([userId])
 }
 
 model User {
@@ -46,16 +46,20 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
-	//user personal info
-	age			  Int?
-	gender		  Gender?
-	weight		  Int?
-	height		  Int?
-	previousHealthIssues String?
-	medication	  String?
+    //user personal info
+    age                  Int?
+    gender               Gender?
+    weight               Int?
+    height               Int?
+    previousHealthIssues String?
+    medication           String?
 
-	//Status
-	isProfileComplete Boolean? @default(false)
+    //Status
+    isProfileComplete Boolean? @default(false)
+
+    //Chat
+    chatid String?
+    chat   Chats[]
 }
 
 model VerificationToken {
@@ -66,8 +70,16 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-enum Gender{
-	Male
-	Female
-	Other
+model Chats {
+    id          String  @id @default(cuid())
+    userid      String  @unique
+    user        User    @relation(fields: [userid], references: [id])
+    chatHistory String?  @db.LongText
+    isComplete  Boolean @default(false)
+}
+
+enum Gender {
+    Male
+    Female
+    Other
 }
