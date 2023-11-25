@@ -20,6 +20,7 @@ declare module "next-auth" {
 			weight: number | null | undefined;
 			healthConditions: string | null | undefined;
 			medications: string | null | undefined;
+			latestChatId: string | null | undefined;
 		} & DefaultSession["user"];
 	}
 }
@@ -30,6 +31,17 @@ export const authOptions: NextAuthOptions = {
 			if (session?.user) {
 				const data = await prisma.user.findUnique({
 					where: { id: user.id },
+					include: {
+						chat: {
+							select: {
+								id: true
+							}
+							,
+							where: {
+								isComplete: false
+							}
+						}
+					}
 				});
 
 				session.user.id = data?.id;
@@ -39,6 +51,7 @@ export const authOptions: NextAuthOptions = {
 				session.user.weight = data?.weight;
 				session.user.healthConditions = data?.previousHealthIssues;
 				session.user.medications = data?.medication;
+				session.user.latestChatId = data?.chat[0]?.id;
 			}
 			return session;
 		},
