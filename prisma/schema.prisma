@@ -54,6 +54,8 @@ model User {
 	previousHealthIssues String?
 	medication	  String?
 
+	//Status
+	isProfileComplete Boolean? @default(false)
 }
 
 model VerificationToken {
@@ -65,7 +67,7 @@ model VerificationToken {
 }
 
 enum Gender{
-	MALE
-	FEMALE
-	OTHER
+	Male
+	Female
+	Other
 }
