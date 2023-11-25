@@ -37,7 +37,6 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts",
-    "src/components/Avatar.jsx"
   ],
   "exclude": ["node_modules", "src/components/Avatar.jsx"]
 }
