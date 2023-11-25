@@ -38,12 +38,12 @@ export const chatRouter = createTRPCRouter({
 					},
 				});
 				//TODO: convert response to audio
-				const lipsyncApiResponse= await axios.post("/api/lipsync", {
+				const lipsyncApiResponse = await axios.post("/api/lipsync", {
 					lamaResponse: response.data.content,
 				});
 
-				console.log( lipsyncApiResponse.data);
-				return { text: response.data.content, lipsync:  lipsyncApiResponse.data.lipsync, audio:lipsyncApiResponse.data.audio };
+				console.log(lipsyncApiResponse.data);
+				return { text: response.data.content, lipsync: lipsyncApiResponse.data.lipsync, audio: lipsyncApiResponse.data.audio };
 			} else {
 				const context = await ctx.prisma.chats.findUnique({
 					where: {
@@ -83,4 +83,17 @@ export const chatRouter = createTRPCRouter({
 				};
 			}
 		}),
+	getChatHistory: protectedProcedure.query(async ({ ctx }) => {
+		const chatid = ctx.session.user.latestChatId;
+		if (!chatid) {
+			return { text: "No chat history" };
+		} else {
+			const data = await ctx.prisma.chats.findUnique({
+				where: {
+					id: chatid,
+				},
+			});
+			return { text: data?.chatHistory };
+		}
+	})
 });
