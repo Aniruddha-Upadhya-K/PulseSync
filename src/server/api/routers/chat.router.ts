@@ -8,9 +8,9 @@ export const chatRouter = createTRPCRouter({
         query: z.string(),
     })).mutation(async ({ ctx, input }) => {
         let chatid = ctx.session.user.latestChatId;
-        if(!chatid) {
+        if (!chatid) {
             const newChat = await ctx.prisma.chats.create({
-                data:{
+                data: {
                     user: {
                         connect: {
                             id: z.string().parse(ctx.session.user.id)
@@ -20,44 +20,55 @@ export const chatRouter = createTRPCRouter({
             })
             chatid = newChat.id
             const response = await axios.post("http://127.0.0.1:8080/completion", {
-            prompt: input.query, "n_predict": 128 
-        },
-            { headers: { "Content-Type": "application/json" } }
-        )
-        await ctx.prisma.chats.update({
-            where: {
-                id: chatid
+                prompt: input.query, "n_predict": 128
             },
-            data: {
-                chatHistory: response.data.content
-            }
-        })
-        //TODO: convert response to audio
-        return response.data.content
+                { headers: { "Content-Type": "application/json" } }
+            )
+            await ctx.prisma.chats.update({
+                where: {
+                    id: chatid
+                },
+                data: {
+                    chatHistory: response.data.content
+                }
+            })
+            //TODO: convert response to audio
+            const lipsyncData = await axios.post("/api/lipsync", {
+                 lamaResponse: response.data.content
+            })
+
+            console.log(lipsyncData.data)
+            return {text:response.data.content, audio: lipsyncData.data}
         }
 
-        else{
+        else {
             const context = await ctx.prisma.chats.findUnique({
                 where: {
                     id: chatid
                 }
             })
             const response = await axios.post("http://127.0.0.1:8080/completion", {
-            prompt: input.query, "n_predict": 128
-        },
-            { headers: { "Content-Type": "application/json" } }
-        )
-        await ctx.prisma.chats.update({
-            where: {
-                id: chatid
+                prompt: input.query, "n_predict": 128
             },
-            data: {
-                chatHistory: context + response.data.content
-            }
-        })
+                { headers: { "Content-Type": "application/json" } }
+            )
+            await ctx.prisma.chats.update({
+                where: {
+                    id: chatid
+                },
+                data: {
+                    chatHistory: context + response.data.content
+                }
+            })
+            console.log(response.data.content);
+            
+            //TODO: convert response to audio
+            const lipsyncData = await axios.post("http://localhost:3000/api/lipsync", {
+                lamaResponse: response.data.content
+            })
 
-        //TODO: convert response to audio
-        return context + response.data.content
+            console.log(lipsyncData.data)
+            return {text: context + response.data.content, audio: lipsyncData.data}
         }
     })
 })
