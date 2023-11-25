@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import { Button } from "@/components/ui/button" 
+import { Button } from "@/components/ui/button";
+import Register from "~/components/Register";
 import { api } from "~/utils/api";
 import Chat from "~/components/Chat";
 
@@ -31,8 +32,8 @@ export default function Home() {
           sessionData?.user.image ? <Chat /> : ""
 
         }
+        <Register />
       </main>
     </>
   );
 }
-
