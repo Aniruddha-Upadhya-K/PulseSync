@@ -21,49 +21,72 @@ import { Label } from "@/components/ui/label";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { z } from "zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Gender } from "@prisma/client";
+import { getServerSession } from "next-auth";
 
-export default function Register() {
-	const user = useSession();
+export default function EditProfile() {
+	const session = useSession();
+	const sessionData = session.data;
 	const register = api.user.updateUser.useMutation();
-	const [Name, setName] = useState("");
-	const [Age, setAge] = useState("");
-	const [Height, setHeight] = useState("");
-	const [Weight, setWeight] = useState("");
-	const [Gender, setGender] = useState<Gender|null>(null);
-	const [HealthConditions, setHealthConditions] = useState("");
-	const [Medications, setMedications] = useState("");
+	const [Name, setName] = useState(sessionData?.user?.name);
+	const [Age, setAge] = useState(sessionData?.user?.age);
+	const [Height, setHeight] = useState(sessionData?.user?.height);
+	const [Weight, setWeight] = useState(sessionData?.user?.weight);
+	const [Gender, setGender] = useState<Gender | null>(
+		sessionData?.user?.gender ?? null
+	);
+	const [HealthConditions, setHealthConditions] = useState(
+		sessionData?.user.healthConditions
+	);
+	const [Medications, setMedications] = useState(
+		sessionData?.user?.medications
+	);
 
+	//useEffect(() => {
+	//	(async () => {
+	//		const user = await getServerSession();
+	//		return user;
+	//	})()
+	//		.then((user) => {
+	//			setName(user?.user?.name);
+	//			setAge(user?.user?.age);
+	//			setHeight(user?.user?.height);
+	//			setWeight(user?.user?.weight);
+	//			setHealthConditions(user?.user?.healthConditions);
+	//			setMedications(user?.user?.medications);
+	//			setGender(user?.user?.gender ?? null);
+	//		})
+	//		.catch((e) => console.log(e));
+	//});
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="outline">Register</Button>
+				<Button variant="outline">Profile</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Enter Details</DialogTitle>
-					<DialogDescription>
+					<DialogTitle className="text-center">
+						Your Profile
+					</DialogTitle>
+					<DialogDescription className="text-center">
 						Create your profile here. Click save when you're done.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
-						<Label
-							defaultValue={
-								user?.data?.user?.name
-									? user.data.user.name
-									: ""
-							}
-							htmlFor="name"
-							className="text-right"
-						>
+						<Label htmlFor="name" className="text-right">
 							Name
 						</Label>
 						<Input
 							id="name"
 							className="col-span-3"
 							onChange={(e) => setName(e.target.value)}
+							defaultValue={
+								sessionData?.user?.name
+									? sessionData?.user?.name
+									: ""
+							}
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -74,7 +97,12 @@ export default function Register() {
 							id="age"
 							type="number"
 							className="col-span-3"
-							onChange={(e) => setAge(e.target.value)}
+							defaultValue={
+								sessionData?.user?.age
+									? sessionData?.user?.age
+									: ""
+							}
+							onChange={(e) => setAge(parseInt(e.target.value))}
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -85,7 +113,14 @@ export default function Register() {
 							id="height"
 							type="number"
 							className="col-span-3"
-							onChange={(e) => setHeight(e.target.value)}
+							defaultValue={
+								sessionData?.user?.height
+									? sessionData?.user?.height
+									: ""
+							}
+							onChange={(e) =>
+								setHeight(parseInt(e.target.value))
+							}
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -96,7 +131,14 @@ export default function Register() {
 							id="height"
 							type="number"
 							className="col-span-3"
-							onChange={(e) => setWeight(e.target.value)}
+							defaultValue={
+								sessionData?.user?.weight
+									? sessionData?.user?.weight
+									: ""
+							}
+							onChange={(e) =>
+								setWeight(parseInt(e.target.value))
+							}
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -107,6 +149,11 @@ export default function Register() {
 							onValueChange={(e) => {
 								setGender(e as Gender);
 							}}
+							defaultValue={
+								sessionData?.user?.gender
+									? sessionData?.user?.gender
+									: ""
+							}
 						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="Select Gender" />
@@ -127,6 +174,11 @@ export default function Register() {
 							onChange={(e) => {
 								setHealthConditions(e.target.value);
 							}}
+							defaultValue={
+								sessionData?.user?.healthConditions
+									? sessionData?.user?.healthConditions
+									: ""
+							}
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
@@ -138,13 +190,27 @@ export default function Register() {
 							onChange={(e) => {
 								setMedications(e.target.value);
 							}}
+							defaultValue={
+								sessionData?.user?.medications
+									? sessionData?.user?.medications
+									: ""
+							}
 						/>
 					</div>
 				</div>
 				<DialogFooter>
 					<Button
 						type="submit"
-						onSubmit={() => {
+						onClick={() => {
+							console.log({
+								Name,
+								Weight,
+								Gender,
+								Height,
+								HealthConditions,
+								Medications,
+								Age,
+							});
 							register.mutate({
 								name: z.string().nonempty().parse(Name),
 								age: z.number().positive().parse(Age),
@@ -158,13 +224,12 @@ export default function Register() {
 									.string()
 									.nonempty()
 									.parse(Medications),
-								gender: z
-									.enum("Male", "Female", "Other")
-									.parse(Gender),
+								gender: Gender,
 							});
 						}}
+						disabled={register.isLoading ? true : false}
 					>
-						Save changes
+						{register.isLoading ? " Loading..." : " Save changes"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
