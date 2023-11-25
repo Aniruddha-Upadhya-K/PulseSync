@@ -34,16 +34,27 @@ export const chatRouter = createTRPCRouter({
 						id: chatid,
 					},
 					data: {
-						chatHistory: response.data.content,
+						chatHistory: JSON.stringify([
+							{
+								user: input.query,
+								model: response.data?.content,
+							},
+						]),
 					},
 				});
 				//TODO: convert response to audio
-				const lipsyncApiResponse= await axios.post("/api/lipsync", {
+				const lipsyncApiResponse = await axios.post("/api/lipsync", {
 					lamaResponse: response.data.content,
 				});
 
-				console.log( lipsyncApiResponse.data);
-				return { text: response.data.content, lipsync:  lipsyncApiResponse.data.lipsync, audio:lipsyncApiResponse.data.audio };
+				console.log(lipsyncApiResponse.data);
+				return {
+					text: JSON.stringify([
+						{ user: input.query, model: response.data.content },
+					]),
+					lipsync: lipsyncApiResponse.data.lipsync,
+					audio: lipsyncApiResponse.data.audio,
+				};
 			} else {
 				const context = await ctx.prisma.chats.findUnique({
 					where: {
@@ -58,28 +69,35 @@ export const chatRouter = createTRPCRouter({
 					},
 					{ headers: { "Content-Type": "application/json" } }
 				);
+				const prevHistory = JSON.parse(context.chatHistory);
 				await ctx.prisma.chats.update({
 					where: {
 						id: chatid,
 					},
 					data: {
-						chatHistory: context + response.data.content,
+						chatHistory: [
+							...prevHistory,
+							{ user: input.query, model: response.data.content },
+						],
 					},
 				});
 				console.log(response.data.content);
 
 				//TODO: convert response to audio
-				const lipsyncData = await axios.post(
+				const lipsyncApiResponse = await axios.post(
 					"http://localhost:3000/api/lipsync",
 					{
 						lamaResponse: response.data.content,
 					}
 				);
 
-				console.log(lipsyncData.data);
 				return {
-					text: context + response.data.content,
-					audio: lipsyncData.data,
+					text: JSON.stringify([
+						...prevHistory,
+						{ user: input.query, model: response.data.content },
+					]),
+					audio: lipsyncApiResponse.data.audio,
+					lipsync: lipsyncApiResponse.data.lipsync,
 				};
 			}
 		}),
