@@ -62,14 +62,14 @@ export default function EditProfile() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant="outline">Profile</Button>
+				<Button variant="outline" className="text-black bg-white">Profile</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-center">
+					<DialogTitle className="text-left">
 						Your Profile
 					</DialogTitle>
-					<DialogDescription className="text-center">
+					<DialogDescription className="text-left">
 						Create your profile here. Click save when you're done.
 					</DialogDescription>
 				</DialogHeader>

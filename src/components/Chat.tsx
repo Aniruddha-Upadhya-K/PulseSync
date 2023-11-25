@@ -149,10 +149,10 @@ export default function Chat({ className, ...props }: CardProps) {
   }, 3000);
 
   return (
-    <div className="absolute bottom-0 right-0 top-0 flex min-h-screen items-center justify-center">
+    <div className="absolute bottom-0 right-0  flex min-h-screen  justify-center">
       <Card
         className={cn(
-          "grid w-[380px] grid-rows-[min-content_1fr_min-content]",
+          "grid w-[380px] mt-20 grid-rows-[min-content_1fr_min-content]",
           className,
         )}
         {...props}
@@ -164,11 +164,11 @@ export default function Chat({ className, ...props }: CardProps) {
         <CardContent className="space-y-4">
           <div className="flex gap-3 text-sm text-white">
             <Avatar>
-              <AvatarFallback>DF</AvatarFallback>
-              <AvatarImage src={sessionData?.user.image ?? ""} />
+              <AvatarFallback></AvatarFallback>
+              <AvatarImage src="/favicon.png" />
             </Avatar>
             <p className="leading-relaxed">
-              <span className="block font-bold text-white ">SyncBot:</span>
+              <span className="block font-bold text-white ">SyncBot</span>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae,
               quo, porro eligendi corrupti veritatis ipsam molestias obcaecati
               asperiores aspernatur quas illum eveniet accusantium! Cumque quia,
@@ -181,7 +181,7 @@ export default function Chat({ className, ...props }: CardProps) {
               <AvatarImage src={sessionData?.user.image ?? ""} />
             </Avatar>
             <p className="leading-relaxed">
-              <span className="block font-bold text-white ">SyncBot:</span>
+              <span className="block font-bold text-white ">{sessionData?.user?.name}</span>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae,
               quo, porro ?
             </p>
