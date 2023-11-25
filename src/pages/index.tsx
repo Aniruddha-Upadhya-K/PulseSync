@@ -11,7 +11,7 @@ export default function Home() {
   const { data: sessionData } = useSession();
 
   return (
-    <>
+    <> 
       <Head>
         <title>PulseSync</title>
         <meta name="description" content="PulseSync" />
