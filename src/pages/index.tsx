@@ -8,9 +8,12 @@ import { Environment, OrbitControls, useTexture } from "@react-three/drei";
 /* @ts-ignore */
 
 import { Avatar } from "~/components/3d/Avatar";
+import { useState } from "react";
 
 export default function Home() {
   const { data: sessionData } = useSession();
+
+  const chat = api.chat.handleQuery.useMutation();
 
   return (
     <>
@@ -20,7 +23,12 @@ export default function Home() {
           <OrbitControls />
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore */}
-          <Avatar position={[-1, -3.15, 1.5]} scale={2.25} />
+          <Avatar
+            position={[-1, -3.15, 1.5]}
+            scale={2.25}
+            audio={chat.data?.audio.data}
+            lipsync={chat?.data?.lipsync}
+          />
           <Environment preset="apartment" />
           <Scene />
         </Canvas>
@@ -36,7 +44,7 @@ export default function Home() {
         ) : (
           <Button onClick={() => signIn("google")}>Talk with SyncBot</Button>
         )}
-        {sessionData?.user.image ? <Chat /> : ""}
+        {sessionData?.user.image ? <Chat chatApi={chat} /> : ""}
       </main>
     </>
   );

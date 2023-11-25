@@ -18,14 +18,14 @@ import { get } from "http";
 let websocket;
 let globalMic = true;
 
-type CardProps = React.ComponentProps<typeof Card>;
+// type CardProps = React.ComponentProps<typeof Card>;
+type prop = {
+  chatApi: any;
+};
 
-export default function Chat({ className, ...props }: CardProps) {
+export default function Chat({ chatApi }: prop) {
   const { data: sessionData } = useSession();
   const [input, setInput] = useState("");
-
-  const chat = api.chat.handleQuery.useMutation();
-  console.log(chat.data?.text);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
