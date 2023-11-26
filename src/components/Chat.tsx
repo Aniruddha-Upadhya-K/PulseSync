@@ -36,11 +36,11 @@ export default function Chat({ chatApi }: prop) {
 
   const turnOffMic = () => {
     websocket = false;
-    console.log(`turned off : ${websocket}`);
+    // console.log(`turned off : ${websocket}`);
   };
   const turnOnMic = () => {
     websocket = true;
-    console.log(`turned on : ${websocket}`);
+    // console.log(`turned on : ${websocket}`);
   };
   turnOnMic();
 
@@ -96,7 +96,7 @@ export default function Chat({ chatApi }: prop) {
         });
 
         webSocket.addEventListener("message", (message) => {
-          console.log("[socket]: message received", globalMic);
+        //   console.log("[socket]: message received", globalMic);
           const received = message && JSON.parse(message?.data);
           const result = received.channel?.alternatives[0].transcript;
           setTranscript((prevState) => {
@@ -116,7 +116,7 @@ export default function Chat({ chatApi }: prop) {
           setPlaceholder(
             globalMic ? "try reloading the page" : "Enter your prompt here!",
           );
-          console.log("[socket]: close");
+        //   console.log("[socket]: close");
         });
       })
       .catch((err) => {

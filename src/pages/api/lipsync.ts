@@ -4,6 +4,8 @@ import axios from "axios";
 import fs from "fs";
 import ffmpeg from "fluent-ffmpeg"
 import ffmpegPath from "@ffmpeg-installer/ffmpeg"
+import { uploadFile } from '~/utils/file';
+import cloudinary from 'cloudinary'
 
 ffmpeg.setFfmpegPath(ffmpegPath.path)
 const inputFilePath = 'audio.mp3';
@@ -27,13 +29,13 @@ export default async function handler(
           headers: {
             accept: "audio/mpeg",
             "content-type": "application/json",
-            "xi-api-key": '024cd486c973697009d766606536c003',
+            "xi-api-key": '3b8cfa47f97e93c2e0e50b40ae5c33c0',
           },
           responseType: "arraybuffer",
         }
       );
 
-      await fs.promises.writeFile("audio.ogg", Buffer.from(result.data));
+      await fs.promises.writeFile("audio.mp3", Buffer.from(result.data));
 
       const oggFile = new Promise((resolve, reject) => {
         ffmpeg()
@@ -51,7 +53,7 @@ export default async function handler(
       })
       await oggFile
 
-	  return result.data
+      return result.data;
     }
     const audioBuffer = await getAudioData();
     console.log(body);
@@ -59,7 +61,7 @@ export default async function handler(
     console.log(command)
 
     const result = await exec(command)
-    return res.json({ message: "success", data: {lipsync:result.stdout, audio:audioBuffer}});
+    return res.json({ message: "success", data: { lipsync: result.stdout, audio: audioBuffer } });
   }
   catch (error) {
     console.log(error)

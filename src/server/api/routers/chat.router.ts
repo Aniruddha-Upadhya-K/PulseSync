@@ -29,7 +29,7 @@ export const chatRouter = createTRPCRouter({
 				const response = await axios.post(
 					"http://127.0.0.1:8080/completion",
 					{
-						prompt: input.query,
+						prompt: "Pretend that this is a conversation between a doctor, and a patient who needs empathetical, supportive responses to motivate him. Reply in a few words around 40-60 to do so. Again you are pretending to be a doctor to be a mental support. patient: " + input.query,
 						n_predict: 128,
 					},
 					{ headers: { "Content-Type": "application/json" } }
@@ -75,7 +75,7 @@ export const chatRouter = createTRPCRouter({
 					{ headers: { "Content-Type": "application/json" } }
 				);
 
-				console.log(response.data)
+				// console.log(response.data)
 				//keep context as chat history for later use
 				const prevHistory = JSON.parse(context?.chatHistory ?? JSON.stringify([]));
 				await ctx.prisma.chats.update({

@@ -33,6 +33,7 @@
     "@types/three": "^0.158.3",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^1.41.0",
     "clsx": "^2.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "leva": "^0.9.35",
