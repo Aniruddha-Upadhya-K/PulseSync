@@ -111,7 +111,7 @@ export const chatRouter = createTRPCRouter({
 	getChatHistory: protectedProcedure.query(async ({ ctx }) => {
 		const chatid = ctx.session.user.latestChatId;
 		if (!chatid) {
-			return { text: "No chat history" };
+			return { text: null };
 		} else {
 			const data = await ctx.prisma.chats.findUnique({
 				where: {

@@ -50,12 +50,14 @@ export default function Chat({ chatApi }: prop) {
   const [queryResults, setQueryResults] = useState([]);
   const [placeholder, setPlaceholder] = useState("loading");
   const [micActive, setMicActive] = useState(true);
-  const [chatData, setChatData] = useState([]);
+  const [chatData, setChatData] = useState([
+]);
 
   const getChatData = api.chat.getChatHistory.useQuery();
 
   useEffect(() => {
-    if (getChatData.data) {
+    if (getChatData.data?.text) {
+      console.log(getChatData.data.text);
       setChatData(getChatData.data.text);
     }
   }, [getChatData.data]);
@@ -152,18 +154,18 @@ export default function Chat({ chatApi }: prop) {
   }, 3000);
 
   return (
-    <div className="absolute bottom-0 right-0  flex min-h-screen  justify-center">
+    <div className="absolute bottom-0 right-0 flex justify-center min-h-screen">
       <Card
         className={cn(
-          "mt-20 grid w-[380px] grid-rows-[min-content_1fr_min-content]",
+          "mt-20 grid w-[380px] grid-rows-[min-content_1fr_min-content] max-h-screen overflow-y-scroll",
         )}
       >
         <CardHeader>
           <CardTitle>Chat with SyncBot</CardTitle>
           <CardDescription>Your personal AI Assistant</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {chatData.map((data: any) => {
+        <CardContent className="space-y-4 overflow-y-auto ">
+          {chatData?.map((data: any) => {
             return (
               <>
                 <div className="flex gap-3 text-sm text-white">
@@ -207,6 +209,7 @@ export default function Chat({ chatApi }: prop) {
                 <Button
                   type="submit"
                   size="icon"
+                  disabled={transcript1 === ""? true : false}
                   onClick={() => {
                     console.log(transcript1);
                     chatApi.mutate({
