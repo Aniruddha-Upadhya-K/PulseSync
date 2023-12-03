@@ -64,20 +64,20 @@ export function Avatar({ audioSpeech, text, lipsync, position, scale }: any) {
   };
   const { nodes, materials } = useGLTF("/assets/avatar.glb") as GLTFResult;
 
-  const { animations: idle } = useFBX("/assets/animations/Idle.fbx");
-  const { animations: talking } = useFBX("/assets/animations/Talking.fbx");
-  const { animations: greeting } = useFBX("/assets/animations/Greeting.fbx");
+  const { animations: Idle } = useFBX("/assets/animations/Idle.fbx");
+  const { animations: Talking } = useFBX("/assets/animations/Talking.fbx");
+  const { animations: Greeting } = useFBX("/assets/animations/Greeting.fbx");
 
-  idle[0].name = "Idle";
-  greeting[0].name = "Greeting";
-  talking[0] && (talking[0].name = "Talking");
+  Idle[0].name = "Idle";
+  Greeting[0].name = "Greeting";
+  Talking[0].name = "Talking";
 
   const [animation, setAnimation] = useState("Idle");
 
   const group = useRef<THREE.Group<THREE.Object3DEventMap>>(null);
 
-  const { actions } = useAnimations([idle[0], greeting[0], talking[0]], group);
-  console.log("action is\n",actions["idle"]);
+  const { actions } = useAnimations([Idle[0], Greeting[0], Talking[0]], group);
+  console.log("action is\n",actions);
   
   // useEffect(() => {
   //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -88,11 +88,11 @@ export function Avatar({ audioSpeech, text, lipsync, position, scale }: any) {
   //   };
   // }, [animations]);
 
-  useEffect(() => {
-    if(actions) {
-      actions["idle"]?.play()
-    }
-  }, [actions]);
+  // useEffect(() => {
+  //   if(actions) {
+  //     actions["idle"]?.play()
+  //   }
+  // }, [actions]);
 
   // useEffect(() => {
   //   if (!actions[animation]) return;

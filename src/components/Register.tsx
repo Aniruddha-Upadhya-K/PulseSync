@@ -61,7 +61,7 @@ export default function EditProfile() {
 	//});
 	return (
 		<Dialog>
-			<DialogTrigger asChild>
+			<DialogTrigger asChild className="">
 				<Button variant="outline" className="text-black bg-white">Profile</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
@@ -149,7 +149,7 @@ export default function EditProfile() {
 							onValueChange={(e) => {
 								setGender(e as Gender);
 							}}
-							defaultValue={
+							defaultValue={		
 								sessionData?.user?.gender
 									? sessionData?.user?.gender
 									: ""

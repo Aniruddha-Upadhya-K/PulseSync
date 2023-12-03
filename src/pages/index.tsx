@@ -37,7 +37,7 @@ export default function Home() {
       <div className="absolute inset-0 z-10">
         <Canvas shadows camera={{ position: [0, 0, 5], fov: 43 }}>
           <color attach="background" args={["#800080"]} />
-          <OrbitControls />
+          <OrbitControls enablePan={false}/>
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore */}
           <Avatar
@@ -59,7 +59,7 @@ export default function Home() {
         {sessionData ? (
           ""
         ) : (
-          <Button onClick={() => signIn("google")}>Talk with SyncBot</Button>
+          <Button className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" onClick={() => signIn("google")}>Talk with SyncBot</Button>
         )}
         {sessionData?.user.image ? <Chat chatApi={chat} /> : ""}
         {/* <audio autoPlay controls src={audioAvailable}> */}
